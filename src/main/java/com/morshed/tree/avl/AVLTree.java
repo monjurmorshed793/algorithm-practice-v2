@@ -1,5 +1,8 @@
 package com.morshed.tree.avl;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class AVLTree {
     Node root;
 
@@ -16,24 +19,22 @@ public class AVLTree {
         return getHeight(node.left) - getHeight(node.right);
     }
 
-    private Node rightRotate(Node y){
-        Node x = y.left;
-        Node t = x.right;
-        x.right = y;
-        y.left = t;
-        y.height = Math.max(getHeight(y.left), getHeight(y.right))+1;
-        x.height = Math.max(getHeight(x.left), getHeight(x.right))+1;
-        return x;
+    private Node rightRotate(Node unbalancedNode){
+        Node leftNode = unbalancedNode.left;
+        unbalancedNode.left = leftNode.right;
+        leftNode.right = unbalancedNode;
+        unbalancedNode.height = Math.max(getHeight(unbalancedNode.left), getHeight(unbalancedNode.right))+1;
+        leftNode.height = Math.max(getHeight(leftNode.left), getHeight(leftNode.right))+1;
+        return leftNode;
     }
 
-    private Node leftRotate(Node x){
-        Node y = x.right;
-        Node t = y.left;
-        y.left = x;
-        x.right = t;
-        y.height = Math.max(getHeight(y.left), getHeight(y.right))+1;
-        x.height = Math.max(getHeight(x.left), getHeight(x.right))+1;
-        return y;
+    private Node leftRotate(Node unbalanceNode){
+        Node rightChild = unbalanceNode.right;
+        unbalanceNode.right = rightChild.left;
+        rightChild.left = unbalanceNode;
+        rightChild.height = Math.max(getHeight(rightChild.left), getHeight(rightChild.right))+1;
+        unbalanceNode.height = Math.max(getHeight(unbalanceNode.left), getHeight(unbalanceNode.right))+1;
+        return rightChild;
     }
 
     public Node insert(Node node, int key){
@@ -71,4 +72,46 @@ public class AVLTree {
         }
         return node;
     }
+
+    public void bfs(Node root){
+        if(root == null)
+            return;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()){
+            Node node = queue.poll();
+            System.out.println(node.key + " ");
+            if(node.left != null )
+                queue.add(node.left);
+            if(node.right!=null)
+                queue.add(node.right);
+        }
+    }
+
+    public void dfsPreOrder(Node root){
+        if(root == null)
+            return;
+        System.out.println(root.key);
+        dfsPreOrder(root.left);
+        dfsPreOrder(root.right);
+    }
+
+    public void dfsInOrder(Node root){
+        if(root == null)
+            return;
+        dfsInOrder(root.left);
+        System.out.println(root.key);
+        dfsInOrder(root.right);
+    }
+
+    public void dfsPostOrder(Node root){
+        if(root == null)
+            return;
+        dfsPostOrder(root.left);
+        dfsPostOrder(root.right);
+        System.out.println(root.key);
+    }
+
+
+
 }
